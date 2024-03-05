@@ -10,7 +10,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Sayfanın tamamını kaplar */
+        height: 100vh;
     }
 
     .form-inline {
@@ -22,15 +22,12 @@
 
 
 <div class="container mt-3 main-container justify-content-center">
-    <!-- İlk Row: Görüntü -->
+
     <div class="row justify-content-center">
         <div class="col-md-12 text-center">
             <img src="img/SearchScience.png" alt="Logo" height="150px" width="450px">
         </div>
     </div>
-
-    <!-- İkinci Row: Arama Çubuğu -->
-    
 
 </div>
 
@@ -48,4 +45,45 @@
     </div>
 
 </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+        $('.form-inline').submit(function (event) {
+
+            event.preventDefault();
+
+            console.log("girdi");
+
+            var keyword = $(this).find('input[type="search"]').val();
+
+
+            GetArticlesByKeyWords(keyword);
+        });
+    });
+
+
+    function GetArticlesByKeyWords(keyword) {
+        $.ajax({
+            url: '/Home/GetArticles',
+            type: 'POST',
+            data: { keyword: keyword },
+            success: function (response) {
+                console.log('Makaleler Başarıyla Alındı');
+               
+            },
+            error: function (error) {
+                console.error('Bu İşlemde Bir Hata Oluştu');
+                
+            }
+        });
+    }
+
+
+</script>
 

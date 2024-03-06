@@ -11,6 +11,14 @@ builder.Services.AddSingleton<ScrapService>(sp =>
     var collectionName = configuration["CollectionName"];
     return new ScrapService(connectionString, databaseName, collectionName);
 });
+builder.Services.AddSingleton<DatabaseService>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("MongoDBConnection");
+    var databaseName = configuration["DatabaseName"];
+    var collectionName = configuration["CollectionName"];
+    return new DatabaseService(connectionString, databaseName, collectionName);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

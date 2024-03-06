@@ -2,6 +2,8 @@
     ViewData["Title"] = "Science Search";
 }
 
+@model IEnumerable<Article>
+
 </br>
 
 <style>
@@ -16,6 +18,39 @@
     .form-inline {
         margin-left: 200px; /* Aramayı sağa kaydırmak için ayarlanmış değer */
     }
+
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        color: #333;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .card-subtitle {
+        color: #666;
+        font-size: 1rem;
+    }
+
+    .card-text {
+        color: #444;
+        font-size: 1rem;
+    }
+
+    .text-muted {
+        color: #888;
+        font-size: 0.8rem;
+    }
+
 </style>
 
 </style>
@@ -46,9 +81,106 @@
 
 </div>
 
+<div class="container mt-3 main-container justify-content-center">
+    <div class="row justify-content-center">
+        <div class="col-md-12 text-center">
+            <div id="idLoading" style="display:none;">
+                <div class="spinner-border text-primary"></div>
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+</br>
+</br>
+</br>
+
+@* @foreach(var x in Model)
+{
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <h5 class="card-title">@x.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Yazarlar: @x.Author</h6>
+                    <p class="card-text">Özet:@x.Summary</p>
+                    <p class="card-text"><small class="text-muted">Anahtar Kelimeler: @x.KeyWords</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+} *@
+
+<div id="content"></div>
+<div id="pagination"></div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+    var itemsPerPage = 10;
+    var currentPage = 1;
+
+    function displayData(page) {
+        var startIndex = (page - 1) * itemsPerPage;
+        var endIndex = page * itemsPerPage;
+
+        $.ajax({
+            url: '/Home/GetFirst100Articles',
+            type: 'GET',
+            success: function (data) {
+                var pageData = data.slice(startIndex, endIndex);
+                var content = document.getElementById('content');
+                content.innerHTML = '';
+
+                pageData.forEach(function (item) {
+                    var card = document.createElement('div');
+                    card.className = 'card mb-3';
+
+                    card.innerHTML = `
+                            <div class="row g-0">
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${item.Title}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">Yazarlar: ${item.Author}</h6>
+                                        <p class="card-text">Özet: ${item.Summary}</p>
+                                        <p class="card-text"><small class="text-muted">Anahtar Kelimeler: ${item.KeyWords}</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    content.appendChild(card);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function displayPagination() {
+        var totalPages = Math.ceil(data.length / itemsPerPage);
+        var pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        for (var i = 1; i <= totalPages; i++) {
+            var pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.textContent = i;
+
+            pageLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                currentPage = parseInt(this.textContent);
+                displayData(currentPage);
+            });
+
+            pagination.appendChild(pageLink);
+            pagination.appendChild(document.createTextNode(' '));
+        }
+    }
+
+    displayData(currentPage);
+    displayPagination();
 
 
     $(document).ready(function () {
@@ -69,20 +201,27 @@
 
 
     function GetArticlesByKeyWords(keyword) {
+        // Preloader'ı ekrana getir
+        $('#idLoading').show();
+
         $.ajax({
             url: '/Home/GetArticles',
             type: 'POST',
             data: { keyword: keyword },
             success: function (response) {
                 console.log('Makaleler Başarıyla Alındı');
-               
+                console.log(response); // Alınan veriyi console'a yazdır
             },
             error: function (error) {
                 console.error('Bu İşlemde Bir Hata Oluştu');
-                
+            },
+            complete: function () {
+                // Veriler alındıktan sonra preloader'ı ekrandan kaldır
+                $('#idLoading').hide();
             }
         });
     }
+
 
 
 </script>

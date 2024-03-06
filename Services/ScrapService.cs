@@ -3,8 +3,7 @@ using MongoDB.Driver;
 using System.Text.RegularExpressions;
 using System.Text;
 using Web_Scraper_UI.Models;
-using static System.Net.WebRequestMethods;
-using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+
 
 namespace Web_Scraper_UI.Services
 {

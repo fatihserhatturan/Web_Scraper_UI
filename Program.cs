@@ -1,4 +1,16 @@
+using Web_Scraper_UI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddSingleton<ScrapService>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connectionString = configuration.GetConnectionString("MongoDBConnection");
+    var databaseName = configuration["DatabaseName"];
+    var collectionName = configuration["CollectionName"];
+    return new ScrapService(connectionString, databaseName, collectionName);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

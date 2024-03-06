@@ -19,38 +19,35 @@ namespace Web_Scraper_UI.Services
             return fullUrl;
         }
 
-        public void StartScrap(string keyword)
+        private readonly IMongoCollection<Article> _collection;
+        public ScrapService(string connectionString, string databaseName, string collectionName)
         {
-            string connectionString = "mongodb://localhost:27017";
-            string databaseName = "Yazlab2_1";
-            string collectionName = "Articles";
-
             var client = new MongoClient(connectionString);
             var db = client.GetDatabase(databaseName);
-            var collection = db.GetCollection<Article>(collectionName);
+            _collection = db.GetCollection<Article>(collectionName);
+        }
 
+        public async Task StartScrapAsync(string keyword)
+        {
             List<string> pdfLinks = new List<string>();
-            List<Thread> threads = new List<Thread>();
 
             string url = ConcatUrl(keyword);
             ScrapArticleLinks(url, pdfLinks);
 
+            var tasks = new List<Task>();
             foreach (string link in pdfLinks)
             {
-                Thread thread = new Thread(() =>
-                {
-                    Article article = new Article();
-                    ScrapArticle(link, article);
-                    collection.InsertOne(article);
-                });
-                threads.Add(thread);
-                thread.Start();
+                tasks.Add(ProcessArticleAsync(link));
             }
 
-            foreach (Thread thread in threads)
-            {
-                thread.Join();
-            }
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task ProcessArticleAsync(string link)
+        {
+            Article article = new Article();
+            ScrapArticle(link, article);
+            await _collection.InsertOneAsync(article);
         }
 
         static void ScrapArticle(string url, Article article)

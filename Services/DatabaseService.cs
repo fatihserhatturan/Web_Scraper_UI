@@ -19,10 +19,34 @@ namespace Web_Scraper_UI.Services
             var articles = _collection.Find(filter).ToList();
             return articles;
         }
-        public List<Article> GetFirst100Articles()
+        public List<Article> GetAllArticles()
         {
-            var articles = _collection.Find(_ => true).Limit(100).ToList();
+            var articles = _collection.Find(_ => true).ToList();
             return articles;
         }
+
+        public Article GetArticleById(string id)
+        {
+            var article = _collection.Find(x=>x.Id == id).SingleOrDefault();
+
+            return article;
+        }
+
+        public List<Article> OrderByDescendingDate()
+        {
+            var sortedArticles = _collection.Find(a => a.Summary != null)
+                                   .SortByDescending(a => a.Date)
+                                   .ToList();
+            return sortedArticles;
+        }
+
+        public List<Article> OrderByAscendingDate()
+        {
+            var sortedArticles = _collection.Find(a => a.Summary != null)
+                                   .SortBy(a => a.Date)
+                                   .ToList();
+            return sortedArticles;
+        }
+
     }
 }

@@ -1,8 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Science Search";
 }
-
-@model IEnumerable<Article>
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@model IPagedList<Article>
 
 </br>
 
@@ -51,6 +52,20 @@
         font-size: 0.8rem;
     }
 
+    .custom-container {
+        max-width: 800px; 
+        margin: 0 auto; 
+    }
+
+    .form-check {
+        text-align: right;
+        margin-left: auto;
+        margin-right: 0;
+        position: relative;
+        top: -30px;
+    }
+
+
 </style>
 
 </style>
@@ -68,6 +83,10 @@
 
 </br>
 
+
+
+
+
 <div class="container mt-3 main-container justify-content-center">
 
     <div class="row justify-content-center">
@@ -79,6 +98,11 @@
         </div>
     </div>
 
+</div>
+
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="sortSwitch" onchange="ToggleSortOrder()">
+    <label class="form-check-label" for="sortSwitch">Azalan Tarih</label>
 </div>
 
 <div class="container mt-3 main-container justify-content-center">
@@ -96,92 +120,36 @@
 </br>
 </br>
 
-@* @foreach(var x in Model)
-{
-    <div class="card mb-3">
-        <div class="row g-0">
-            <div class="col-md-12">
-                <div class="card-body">
-                    <h5 class="card-title">@x.Title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Yazarlar: @x.Author</h6>
-                    <p class="card-text">Özet:@x.Summary</p>
-                    <p class="card-text"><small class="text-muted">Anahtar Kelimeler: @x.KeyWords</small></p>
+<div class="container custom-container">
+    @foreach (var x in Model)
+    {
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-12">
+                    <div class="card-body">
+                        <form action="/Home/GetArticlesBlabla" method="POST">
+                            <!-- Gizli ID alanı -->
+                            <input type="hidden" name="Id" value="@x.Id">
+                            <!-- Gösterilecek başlık alanı -->
+                            <h5 class="card-title">
+                                <button type="submit" class="btn btn-link">@x.Title</button>
+                            </h5>
+                        </form>
+                        <h6 class="card-subtitle mb-2 text-muted">Yazarlar: @x.Author</h6>
+                        <p class="card-text">Özet: @x.Summary</p>
+                        <p class="card-text"><small class="text-muted">Anahtar Kelimeler: @x.KeyWords</small></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-} *@
+    }
 
-<div id="content"></div>
-<div id="pagination"></div>
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))
+</div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    var itemsPerPage = 10;
-    var currentPage = 1;
-
-    function displayData(page) {
-        var startIndex = (page - 1) * itemsPerPage;
-        var endIndex = page * itemsPerPage;
-
-        $.ajax({
-            url: '/Home/GetFirst100Articles',
-            type: 'GET',
-            success: function (data) {
-                var pageData = data.slice(startIndex, endIndex);
-                var content = document.getElementById('content');
-                content.innerHTML = '';
-
-                pageData.forEach(function (item) {
-                    var card = document.createElement('div');
-                    card.className = 'card mb-3';
-
-                    card.innerHTML = `
-                            <div class="row g-0">
-                                <div class="col-md-12">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${item.Title}</h5>
-                                        <h6 class="card-subtitle mb-2 text-muted">Yazarlar: ${item.Author}</h6>
-                                        <p class="card-text">Özet: ${item.Summary}</p>
-                                        <p class="card-text"><small class="text-muted">Anahtar Kelimeler: ${item.KeyWords}</small></p>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    content.appendChild(card);
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
-
-    function displayPagination() {
-        var totalPages = Math.ceil(data.length / itemsPerPage);
-        var pagination = document.getElementById('pagination');
-        pagination.innerHTML = '';
-
-        for (var i = 1; i <= totalPages; i++) {
-            var pageLink = document.createElement('a');
-            pageLink.href = '#';
-            pageLink.textContent = i;
-
-            pageLink.addEventListener('click', function (event) {
-                event.preventDefault();
-                currentPage = parseInt(this.textContent);
-                displayData(currentPage);
-            });
-
-            pagination.appendChild(pageLink);
-            pagination.appendChild(document.createTextNode(' '));
-        }
-    }
-
-    displayData(currentPage);
-    displayPagination();
-
 
     $(document).ready(function () {
 
@@ -194,14 +162,14 @@
 
             var keyword = $(this).find('input[type="search"]').val();
 
-
+          // $('.custom-container').hide();
             GetArticlesByKeyWords(keyword);
         });
     });
 
 
     function GetArticlesByKeyWords(keyword) {
-        // Preloader'ı ekrana getir
+        
         $('#idLoading').show();
 
         $.ajax({
@@ -210,18 +178,106 @@
             data: { keyword: keyword },
             success: function (response) {
                 console.log('Makaleler Başarıyla Alındı');
-                console.log(response); // Alınan veriyi console'a yazdır
+                console.log(response); 
+                FillCards(response);
             },
             error: function (error) {
                 console.error('Bu İşlemde Bir Hata Oluştu');
             },
             complete: function () {
-                // Veriler alındıktan sonra preloader'ı ekrandan kaldır
+             
+                $('#idLoading').hide();
+            }
+        });
+    }
+    function FillCards(articles) {
+        // Kartları temizle
+        $('.custom-container').empty();
+        
+        // Her makale için kart oluştur
+        articles.forEach(function (article) {
+            console.log(article);
+            var cardHtml = `
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                            <form action="/Home/GetArticlesBlabla" method="POST">
+                                <!-- Gizli ID alanı -->
+                                    <input type="hidden" name="Id" value=${article.id}>
+                                <!-- Gösterilecek başlık alanı -->
+                                <h5 class="card-title">
+                                        <button type="submit" class="btn btn-link">${article.title}</button>
+                                </h5>
+                            </form>
+                                    <h6 class="card-subtitle mb-2 text-muted">Yazarlar: ${article.author}</h6>
+                                    <p class="card-text">Özet: ${article.summary}</p>
+                                    <p class="card-text"><small class="text-muted">Anahtar Kelimeler: ${article.keyWords}</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+            $('.custom-container').append(cardHtml);
+        });
+    }
+
+    function GetArticlesByDate() {
+        $('#idLoading').show();
+
+        $.ajax({
+            url: '/Home/GetArticlesByDateDescending',
+            type: 'POST',
+            success: function (response) {
+                console.log('Makaleler tarihe göre başarıyla alındı');
+                console.log(response);
+                FillCards(response);
+            },
+            error: function (error) {
+                console.error('Bu işlemde bir hata oluştu');
+            },
+            complete: function () {
                 $('#idLoading').hide();
             }
         });
     }
 
+    function GetArticlesByDateAscending() {
+        $('#idLoading').show();
+
+        $.ajax({
+            url: '/Home/GetArticlesByDateAscending',
+            type: 'POST',
+            success: function (response) {
+                console.log('Makaleler tarihe göre başarıyla alındı');
+                console.log(response);
+                FillCards(response);
+            },
+            error: function (error) {
+                console.error('Bu işlemde bir hata oluştu');
+            },
+            complete: function () {
+                $('#idLoading').hide();
+            }
+        });
+    }
+    var isDescending = true; // Başlangıçta azalan sırada sıralama yapacak
+
+    function ToggleSortOrder() {
+        isDescending = !isDescending; // Sıralama düzenini tersine çevir
+
+        // Switch butonun metnini güncelle
+        var switchLabel = document.querySelector('.form-check-label');
+        switchLabel.innerText = isDescending ? 'Azalan Tarih' : 'Artan Tarih';
+
+        // Yeni sıralama düzenine göre makaleleri al
+        if (isDescending) {
+            GetArticlesByDate();
+        }
+        else {
+            GetArticlesByDateAscending();
+        }
+    }
 
 
 </script>

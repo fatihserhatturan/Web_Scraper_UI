@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "GetArticlesBlabla";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Article;
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<style>
+    /* styles.css */
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f8f8;
+    }
+
+    .article-container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .article-header {
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .article-header h1.title {
+        font-size: 36px;
+        margin: 0;
+        font-weight: bold;
+        color: #333;
+        text-transform: capitalize;
+    }
+
+    .article-header .meta {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .article-header .meta span {
+        margin-right: 20px;
+        display: inline-block;
+    }
+
+    .article-content h2 {
+        color: #333;
+        font-size: 24px;
+        margin-top: 30px;
+        font-weight: bold;
+    }
+
+    .article-content p {
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 20px;
+    }
+
+    .article-content a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .article-content a:hover {
+        text-decoration: underline;
+    }
+
+    .article-content .summary h2,
+    .article-content .references h2,
+    .article-content .quotations h2 {
+        font-size: 20px;
+        color: #333;
+        margin-top: 40px;
+    }
+
+    .article-content .summary p,
+    .article-content .references p,
+    .article-content .quotations p {
+        color: #666;
+        line-height: 1.8;
+    }
+
+    .fadeIn {
+        animation: fadeIn 1s ease-in-out;
+    }
+</style>
+
+<div class="article-container fadeIn">
+    <div class="article-header">
+        <h1 class="title">@Model.Title</h1>
+        <div class="meta">
+            <span class="author"><i class="fas fa-user"></i> - @Model.Author</span>
+            <span class="date"><i class="fas fa-calendar-alt"></i> - @Model.Date</span>
+        </div>
+    </div>
+    <div class="article-content">
+        <div class="summary">
+            <h2><i class="fas fa-info-circle"></i> Özet :</h2>
+            <p>@Model.Summary</p>
+        </div>
+        <div class="publisher">
+            <h2><i class="fas fa-building"></i> Yayımcı :</h2>
+            <p>@Model.Publisher</p>
+        </div>
+        <div class="references">
+            <h2><i class="fas fa-book"></i> Kaynakça :</h2>
+            <p>@Model.References</p>
+        </div>
+        <div class="keywords">
+            <h2><i class="fas fa-key"></i> Anahtar Kelimeler :</h2>
+            <p>@Model.KeyWords</p>
+        </div>
+        <div class="goto-article">
+            <h2><i class="fas fa-external-link-alt"></i> Makaleye Git :</h2>
+            <a href="@Model.UrlAdress" target="_blank" class="article-link">Makaleye Git</a>
+        </div>
+    </div>
+</div>

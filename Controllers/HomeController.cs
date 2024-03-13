@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using Web_Scraper_UI.Models;
 using Web_Scraper_UI.Services;
@@ -10,16 +11,27 @@ namespace Web_Scraper_UI.Controllers
     {
         private readonly ScrapService _scrapService;
         private readonly DatabaseService _databaseService;
+        private readonly FilteringService _filteringService;
 
-        public HomeController(ScrapService scrapService, DatabaseService databaseService)
+        public HomeController(ScrapService scrapService, DatabaseService databaseService,FilteringService filteringService )
         {
             _scrapService = scrapService;
             _databaseService = databaseService;
+            _filteringService = filteringService;
         }
 
         public IActionResult Index(int page =1)
         {
             var articles = _databaseService.GetAllArticles().ToPagedList(page,10);
+            var authors = _databaseService.GetAuthors();
+            var types = _databaseService.GetArticleType();
+            var publisers = _databaseService.GetPublisher();
+            var keywords = _databaseService.GetKeywords();
+
+            ViewBag.Types = types;
+            ViewBag.Authors = authors;
+            ViewBag.Publishers = publisers;
+            ViewBag.Keywords = keywords;
             return View(articles);
         }
 
@@ -54,6 +66,23 @@ namespace Web_Scraper_UI.Controllers
         {
             var articles = _databaseService.OrderByAscendingDate();
             return Json(articles);
+        }
+
+        [HttpGet]
+        public IActionResult GetAuthor()
+        {
+            var authors = _databaseService.GetAuthors();
+            return Json(authors);
+        }
+
+        [HttpPost]
+        public IActionResult GetFilters(List<string> keywords, List<string> publishers, List<string> types, List<string> authors)
+        {
+            var result = _filteringService.MainFilter(keywords, publishers, types, authors);
+
+            Console.WriteLine(result);
+
+            return Json(result);
         }
     }
 }

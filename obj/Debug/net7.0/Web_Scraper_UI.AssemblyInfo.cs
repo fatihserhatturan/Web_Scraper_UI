@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Web_Scraper_UI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+118095d945f82b0e9bae292d57cc15a3af5513f7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f737f12175cc78bfda1a37e213315816b4e10162")]
 [assembly: System.Reflection.AssemblyProductAttribute("Web_Scraper_UI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Web_Scraper_UI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

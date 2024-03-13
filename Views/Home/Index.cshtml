@@ -59,10 +59,45 @@
 
     .form-check {
         text-align: right;
-        margin-left: auto;
-        margin-right: 0;
+        margin-left: -30px;
+        margin-right: 100px;
         position: relative;
-        top: -30px;
+        top: -50px;
+    }
+
+    .sidebar-container {
+        width: 200px; /* İstenilen genişlik */
+        float: left; /* Sayfanın soluna konumlandırma */
+        margin-right: 10px; /* Sağ boşluk */
+        margin-left: -100px;
+    }
+
+    /* Panel başlığı stilleri */
+    .panel-title a {
+        text-decoration: none;
+        color: #333;
+        display: block;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+        .panel-title a:hover {
+            background-color: #f5f5f5;
+        }
+
+    /* Panel gövdesi stilleri */
+    .panel-body {
+        padding: 10px;
+    }
+
+    /* Checkbox stilleri */
+    .checkbox label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .checkbox input[type="checkbox"] {
+        margin-right: 5px;
     }
 
 
@@ -84,9 +119,6 @@
 </br>
 
 
-
-
-
 <div class="container mt-3 main-container justify-content-center">
 
     <div class="row justify-content-center">
@@ -99,6 +131,109 @@
     </div>
 
 </div>
+
+
+<div class="sidebar-container">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+        <!-- Yazarlar -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="heading1">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                        Yazarlar
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                <div class="panel-body">
+                    <input type="text" class="form-control" id="authorSearch" placeholder="Arama...">
+                    <div class="checkbox">
+                        @foreach (var author in ViewBag.Authors)
+                        {
+                            <label class="authorItem">
+                                <input type="checkbox" class="option-input checkbox" name="authors[]" value="@author" /> <span class="ml-10">@author</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Makaleler -->
+            <div class="panel-heading" role="tab" id="heading2">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                        Makale Çeşitleri
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                <div class="panel-body">
+                <input type="text" class="form-control" id="articleSearch" placeholder="Arama...">
+                    <div class="checkbox">
+                        @foreach (var type in ViewBag.Types)
+                        {
+                        <label class ="articleItem">
+                                <input type="checkbox" class="option-input checkbox" name="types[]" value="@type" /> <span class="ml-10">@type</span>
+                            </label>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        <!-- Yayıncılar -->
+            <div class="panel-heading" role="tab" id="heading3">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                        Yayıncı Adı
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+                <div class="panel-body">
+                <input type="text" class="form-control" id="publisherSearch" placeholder="Arama...">
+                    <div class="checkbox">
+                        @foreach (var publish in ViewBag.Publishers)
+                        {
+                        <label class="publisherItem">
+                                <input type="checkbox" class="option-input checkbox" name="publishers[]" value="@publish" /> <span class="ml-10">@publish</span>
+                            </label>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        <!-- Anahtar Kelimeler -->
+            <div class="panel-heading" role="tab" id="heading4">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                        Anahtar Kelimeler
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+                <div class="panel-body">
+                <input type="text" class="form-control" id="keywordSearch" placeholder="Arama...">
+                    <div class="checkbox">
+                        @foreach (var keyword in ViewBag.Keywords)
+                        {
+                        <label class="keywordItem">
+                                <input type="checkbox" class="option-input checkbox" name="keywords[]" value="@keyword" /> <span class="ml-10">@keyword</span>
+                            </label>
+                        }
+                    </div>
+
+                </div>
+            </div>
+            </br>
+        <button id="applyFiltersBtn" class="btn btn-primary">Filtreyi Uygula</button>
+        </div>
+    </div>
+
+
+
+</div>
+
 
 <div class="form-check form-switch">
     <input class="form-check-input" type="checkbox" id="sortSwitch" onchange="ToggleSortOrder()">
@@ -167,6 +302,70 @@
         });
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        var accordionBtn = document.querySelector('.accordion-btn');
+        var accordionContent = document.querySelector('.accordion-content');
+
+        accordionBtn.addEventListener('click', function () {
+            if (accordionContent.style.display === 'block') {
+                accordionContent.style.display = 'none';
+            } else {
+                accordionContent.style.display = 'block';
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#authorSearch').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('.authorItem').each(function () {
+                var text = $(this).text().toLowerCase();
+                if (text.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+      $(document).ready(function () {
+        $('#articleSearch').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('.articleItem').each(function () {
+                var text = $(this).text().toLowerCase();
+                if (text.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+      $(document).ready(function () {
+        $('#publisherSearch').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('.publisherItem').each(function () {
+                var text = $(this).text().toLowerCase();
+                if (text.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+    $(document).ready(function () {
+        $('#keywordSearch').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('.keywordItem').each(function () {
+                var text = $(this).text().toLowerCase();
+                if (text.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
 
     function GetArticlesByKeyWords(keyword) {
         
@@ -278,6 +477,60 @@
             GetArticlesByDateAscending();
         }
     }
+    document.getElementById("applyFiltersBtn").addEventListener("click", function () {
+        var filters = {};
+
+        // Seçilen yazarları al
+        var selectedAuthors = [];
+        var authorCheckboxes = document.querySelectorAll('input[name="authors[]"]:checked');
+        authorCheckboxes.forEach(function (checkbox) {
+            console.log("girdi");
+            selectedAuthors.push(checkbox.value);
+        });
+        filters.authors = selectedAuthors;
+
+        // Diğer filtreleme seçeneklerini al ve filtreler nesnesine ekleyin
+        var selectedTypes = [];
+        var typeCheckboxes = document.querySelectorAll('input[name="types[]"]:checked');
+        typeCheckboxes.forEach(function (checkbox) {
+            selectedTypes.push(checkbox.value);
+        });
+        filters.types = selectedTypes;
+
+        // Yayıncıları al ve filtreler nesnesine ekleyin
+        var selectedPublishers = [];
+        var publisherCheckboxes = document.querySelectorAll('input[name="publishers[]"]:checked');
+        publisherCheckboxes.forEach(function (checkbox) {
+            selectedPublishers.push(checkbox.value);
+        });
+        filters.publishers = selectedPublishers;
+
+        // Anahtar kelimeleri al ve filtreler nesnesine ekleyin
+        var selectedKeywords = [];
+        var keywordCheckboxes = document.querySelectorAll('input[name="keywords[]"]:checked');
+        keywordCheckboxes.forEach(function (checkbox) {
+            selectedKeywords.push(checkbox.value);
+        });
+        filters.keywords = selectedKeywords;
+        
+        console.log(filters);
+
+        // Filtreleri kontrolcüye istek olarak gönder
+        $.ajax({
+            url: '/Home/GetFilters',
+            type: 'POST',
+            data: { keywords: filters.keywords, publishers: filters.publishers, types: filters.types, authors: filters.authors },
+            success: function (response) {
+                FillCards(response);
+            },
+            error: function (error) {
+                console.error('Bu İşlemde Bir Hata Oluştu');
+            },
+            complete: function () {
+
+            }
+        });
+    });
 
 
 </script>

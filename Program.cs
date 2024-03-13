@@ -19,7 +19,7 @@ builder.Services.AddSingleton<DatabaseService>(sp =>
     var collectionName = configuration["CollectionName"];
     return new DatabaseService(connectionString, databaseName, collectionName);
 });
-
+builder.Services.AddSingleton<FilteringService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

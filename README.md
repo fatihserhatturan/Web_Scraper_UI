@@ -57,7 +57,7 @@ Execute the following command in the terminal or command prompt to clean up the 
 ## Used Technologies
 
 
-- MongoDb ![MongoDb](https://brandfolder.com/mongodb/press-kit/#!asset/jv3gcw39g9hswvbwrvjc3qtj)
+- MongoDb ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white) 
 - ElasticSearch
 - Html Agility Pack
 

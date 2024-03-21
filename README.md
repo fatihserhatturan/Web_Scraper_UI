@@ -79,7 +79,6 @@ Please follow this project's code of conduct.
 
 ## Collaborators 
 - [Fatih Serhat Turan](https://github.com/fatihserhatturan) 
-- [Mustafa Surmeli](https://github.com/mustafasurmeli) 
 
 
   
